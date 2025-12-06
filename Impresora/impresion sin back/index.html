@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Ticket de Venta</title>
+  <style>
+    body {
+      font-family: 'Courier New', monospace;
+      margin: 0;
+      padding: 0;
+    }
+
+    #ticket {
+      width: 80mm;
+      padding: 5mm;
+      text-align: center;
+    }
+
+    h2 {
+      margin: 5px 0;
+    }
+
+    hr {
+      border: 0;
+      border-top: 1px dashed #000;
+      margin: 5px 0;
+    }
+
+    @media print {
+      @page {
+        size: 80mm auto;
+        margin: 0;
+      }
+      .btn {
+        display: none;
+      }
+    }
+
+    .btn {
+      margin: 20px;
+      padding: 10px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div id="ticket">
+    <h2>ClandeStock</h2>
+    <p>Venta N° 00123</p>
+    <p>Fecha: 05/11/2025</p>
+    <hr>
+    <p>Hamburguesa x1 ........ $1500</p>
+    <p>Bebida x1 .............. $500</p>
+    <hr>
+    <p><strong>Total: $2000</strong></p>
+    <hr>
+    <p>¡Gracias por su compra!</p>
+  </div>
+
+  <button class="btn" onclick="window.print()">🖨️ Imprimir Ticket</button>
+</body>
+</html>
