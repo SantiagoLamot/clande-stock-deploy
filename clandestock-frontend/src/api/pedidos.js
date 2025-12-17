@@ -1,6 +1,6 @@
 import axios from "./axios";
 
-const API_URL = "http://localhost:8080";
+const API_URL = "/api";
 
 export const getVentasActivas = async () => {
   const response = await axios.get(`${API_URL}/venta/abiertas`);
@@ -9,7 +9,7 @@ export const getVentasActivas = async () => {
 
 export const getVentasCerradas = async () => {
   const token = localStorage.getItem("token");
-  const response = await axios.get("http://localhost:8080/venta/cerradas", {
+  const response = await axios.get("/api/venta/cerradas", {
     headers: {
       Authorization: `Bearer ${token}`,
     },
