@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:8080";
+const BASE_URL = "/api";
 
 export const getVentaById = async (idVenta, token) => {
   const res = await fetch(`${BASE_URL}/venta/${idVenta}`, {
