@@ -3,6 +3,8 @@ package com.clandestock.backend.producto.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import jakarta.persistence.EntityNotFoundException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -78,7 +80,8 @@ public class CategoriaService {
     //Validado por el context
     public List<CategoriaResponseDTO> obtenerTodas() {
         //Se obtiene el contexto seteado cuando pasa el jwt authentication filters
-        UsuarioContexto usuario = (UsuarioContexto) SecurityContextHolder.getContext().getAuthentication()
+        UsuarioContexto usuario = (UsuarioContexto) SecurityContextHolder.getContext()
+                .getAuthentication()
                 .getPrincipal();
 
         //Se verifica si es admin general y obtiene todas
@@ -88,12 +91,12 @@ public class CategoriaService {
                     .map(this::toResponseDTO)
                     .collect(Collectors.toList());
 
-        //Caso contario obtiene la corresponiende al local asignado
+            //Caso contario obtiene la corresponiende al local asignado
         } else {
             return categoriaRepository.findByLocal_NombreLocal(usuario.getLocal())
-            .stream()
-            .map(this::toResponseDTO)
-            .collect(Collectors.toList());
+                    .stream()
+                    .map(this::toResponseDTO)
+                    .collect(Collectors.toList());
         }
     }
 
@@ -110,12 +113,62 @@ public class CategoriaService {
         return categoria;
     }
 
-    private CategoriaResponseDTO toResponseDTO(Categoria cat) {
-        CategoriaResponseDTO categoriaDTO = new CategoriaResponseDTO();
-        categoriaDTO.id = cat.getId().toString();
-        categoriaDTO.nombreCategoria = cat.getNombreCategoria();
-        categoriaDTO.localID = cat.getLocal().getId().toString();
-        return categoriaDTO;
+    private CategoriaResponseDTO toResponseDTO(Categoria categoria) {
+        CategoriaResponseDTO dto = new CategoriaResponseDTO();
+        dto.setId(categoria.getId());
+        dto.setNombreCategoria(categoria.getNombreCategoria());
+        dto.setLocalId(categoria.getLocal().getId());
+        dto.setActivo(categoria.isActivo());
+        return dto;
     }
 
+    public CategoriaResponseDTO darDeBaja(Long id) {
+        Categoria categoria = categoriaRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Categoria no encontrada"));
+
+        categoria.setActivo(false);
+        categoriaRepository.save(categoria);
+
+        return toResponseDTO(categoria);
+    }
+
+    public CategoriaResponseDTO reactivarCategoria(Long id) {
+        Categoria categoria = categoriaRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Categoria no encontrada"));
+
+        categoria.setActivo(true);
+        categoriaRepository.save(categoria);
+
+        return toResponseDTO(categoria);
+    }
+
+    public List<CategoriaResponseDTO> obtenerCategoriasActivas() {
+        UsuarioContexto usuario = (UsuarioContexto) SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getPrincipal();
+
+        if (usuario.esAdminGeneral()) {
+            return categoriaRepository.findByActivoTrue()
+                    .stream()
+                    .map(this::toResponseDTO)
+                    .collect(Collectors.toList());
+        } else {
+            return categoriaRepository.findByLocal_NombreLocalAndActivoTrue(usuario.getLocal())
+                    .stream()
+                    .map(this::toResponseDTO)
+                    .collect(Collectors.toList());
+        }
+    }
+
+    public List<CategoriaResponseDTO> obtenerInactivas() {
+        UsuarioContexto usuario = (UsuarioContexto) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (!usuario.esAdminGeneral()) {
+            throw new AccessDeniedException("No tienes permisos para ver categorías inactivas");
+        }
+        List<Categoria> categorias = categoriaRepository.findByActivoFalse();
+        if (categorias.isEmpty()) {
+            throw new RuntimeException("No se encontraron categorías inactivas");
+        }
+        return categorias.stream().map(this::toResponseDTO).collect(Collectors.toList());
+    }
 }

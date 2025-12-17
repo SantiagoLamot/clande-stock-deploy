@@ -5,7 +5,7 @@ export const enviarReporte = async (descripcion, usuarioEmisor) => {
   if (!token) throw new Error("Token no encontrado");
 
   const response = await axios.post(
-    "/api/reporte",
+    "http://localhost:8080/reporte",
     {
       descripcion,
       usuarioEmisor, // nombre de usuario, no id
@@ -23,7 +23,7 @@ export const obtenerHistorialReportes = async () => {
   const token = localStorage.getItem("access_token");
   if (!token) throw new Error("Token no encontrado");
 
-  const response = await axios.get("/api/reporte/historial", {
+  const response = await axios.get("http://localhost:8080/reporte/historial", {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -35,7 +35,7 @@ export const obtenerTodosReportes = async () => {
   const token = localStorage.getItem("access_token");
   if (!token) throw new Error("Token no encontrado");
 
-  const response = await axios.get("/api/reporte/historial", {
+  const response = await axios.get("http://localhost:8080/reporte/historial", {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -48,7 +48,7 @@ export const checkReporte = async (id) => {
   if (!token) throw new Error("Token no encontrado");
 
   const response = await axios.put(
-    `/api/reporte/${id}`,
+    `http://localhost:8080/reporte/${id}`,
     {},
     {
       headers: {

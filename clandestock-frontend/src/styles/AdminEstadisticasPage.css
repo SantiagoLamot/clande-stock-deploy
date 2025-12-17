@@ -1,0 +1,37 @@
+.estadisticas-container {
+  position: relative;
+  min-height: 100vh;
+  background: radial-gradient(circle at center, #0b0b0b 20%, #000 100%);
+  color: #f8f9fa;
+  font-family: "MedievalSharp", serif;
+  text-shadow: 1px 1px 3px #000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.estadisticas-title {
+  font-size: 2.3rem;
+  font-weight: bold;
+  text-shadow: 0 0 10px #ff0040, 0 0 20px #000;
+}
+
+.estadisticas-text {
+  font-size: 1.2rem;
+  color: #ddd;
+  max-width: 600px;
+}
+
+.proximamente {
+  margin-top: 3rem;
+  color: #ffc107;
+  font-style: italic;
+  text-shadow: 0 0 10px #ff0040, 0 0 20px #000;
+}
+
+/* Sutil resplandor gótico en hover */
+.estadisticas-title:hover {
+  text-shadow: 0 0 15px #ffc107, 0 0 40px #ff0040;
+  transition: text-shadow 0.4s ease-in-out;
+}

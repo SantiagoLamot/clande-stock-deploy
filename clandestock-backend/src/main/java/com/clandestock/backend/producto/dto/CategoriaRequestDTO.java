@@ -12,4 +12,6 @@ public class CategoriaRequestDTO {
 
     @NotBlank
     String localId;
+
+
 }

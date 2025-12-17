@@ -1,5 +1,6 @@
 import { cerrarCaja } from "../../api/caja";
 import Title from "../../components/Title";
+import TicketCierreCaja from "../tickets/TicketCierreCaja";
 
 export const CerrarCaja = ({ onSuccess }) => {
     const handleCerrar = async () => {
@@ -30,6 +31,7 @@ export const CerrarCaja = ({ onSuccess }) => {
                     >
                         Cancelar
                     </button>
+                    <TicketCierreCaja/>
                 </div>
             </div>
         </div>

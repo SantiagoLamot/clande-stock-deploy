@@ -26,4 +26,7 @@ export const getAllCajasAbiertas = async () => {
     const response = await axios.get('/caja/detalle');
     return response.data;
 };
-
+export const obtenerProductosVendidos = async () => {
+    const response = await axios.get('/productoxventa/caja');
+    return response.data;
+};

@@ -1,4 +1,4 @@
-const BASE_URL = "/api";
+const BASE_URL = "http://localhost:8080";
 
 export const getVentaById = async (idVenta, token) => {
   const res = await fetch(`${BASE_URL}/venta/${idVenta}`, {
@@ -85,5 +85,21 @@ export const cerrarVenta = async (idVenta, token) => {
     headers: { Authorization: `Bearer ${token}` },
   });
   if (!res.ok) throw new Error("Error al cerrar venta");
+  return await res.json();
+};
+
+export const getCategoriasActivas = async (token) => {
+  const res = await fetch(`${BASE_URL}/categoria/todas/activas`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!res.ok) throw new Error("Error al obtener categorías activas");
+  return await res.json();
+};
+
+export const getMetodosPagoActivos = async (token) => {
+  const res = await fetch(`${BASE_URL}/metodopago/activos`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!res.ok) throw new Error("Error al obtener métodos de pago activos");
   return await res.json();
 };

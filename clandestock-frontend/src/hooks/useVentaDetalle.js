@@ -3,9 +3,9 @@ import {
   getVentaById,
   agregarProductoAVenta,
   quitarProductoDeVenta,
-  getCategorias,
+  getCategoriasActivas,
   getProductosPorCategoria,
-  getMetodosPago,
+  getMetodosPagoActivos,
   insertarMetodoPago,
   cerrarVenta,
 } from "../services/ventaService";
@@ -37,16 +37,22 @@ export const useVentaDetalle = (idVenta) => {
       setMensaje("❌ Error al cargar venta");
     }
   };
+  const refreshVenta = async (idVenta) => {
+    const data = await getVentaById(idVenta, token);
+    setVenta(data);
+  };
 
-  // 🔄 Cargar categorías
+  // 🔄 Cargar categorías activas
   const cargarCategorias = async () => {
     try {
-      const data = await getCategorias(token);
-      const normalizadas = data.map((c) => ({
-        id: c.id,
-        nombreCategoria: c.nombre_categoria,
-        localID: c.local_id,
-      }));
+      const data = await getCategoriasActivas(token);
+      const normalizadas = data
+        .filter((c) => c.activo)
+        .map((c) => ({
+          id: c.id,
+          nombreCategoria: c.nombre_categoria,
+          localID: c.local_id,
+        }));
       setCategorias(normalizadas);
     } catch (err) {
       console.error(err);
@@ -65,11 +71,18 @@ export const useVentaDetalle = (idVenta) => {
     }
   };
 
-  // 🔄 Cargar métodos de pago
+  // 🔄 Cargar métodos de pago activos
   const cargarMetodosPago = async () => {
     try {
-      const data = await getMetodosPago(token);
-      setMetodosPago(data);
+      const data = await getMetodosPagoActivos(token);
+      // normalizamos para que siempre tengas camelCase y boolean
+      const normalizados = data.map((m) => ({
+        ...m,
+        estadoBool:
+          String(m.estado).trim().toLowerCase() === "true" ||
+          String(m.estado).trim().toLowerCase() === "activo",
+      }));
+      setMetodosPago(normalizados);
     } catch (err) {
       console.error(err);
       setMensaje("❌ Error al cargar métodos de pago");
@@ -79,7 +92,8 @@ export const useVentaDetalle = (idVenta) => {
   // ➕ Agregar producto
   const handleAgregarProducto = async (prod) => {
     try {
-      await agregarProductoAVenta(idVenta, prod.id, token);
+      const idProd = prod.idProducto ?? prod.id;
+      await agregarProductoAVenta(idVenta, idProd, token);
       await cargarVenta();
       await cargarProductos();
     } catch (err) {
@@ -91,7 +105,11 @@ export const useVentaDetalle = (idVenta) => {
   // ➖ Quitar producto
   const handleQuitarProducto = async (prod) => {
     try {
-      await quitarProductoDeVenta(idVenta, prod.idProductoPorVenta, token);
+      await quitarProductoDeVenta(
+        idVenta,
+        prod.idProductosPorVenta[prod.idProductosPorVenta.length - 1],
+        token
+      );
       await cargarVenta();
       await cargarProductos();
     } catch (err) {
@@ -145,6 +163,7 @@ export const useVentaDetalle = (idVenta) => {
 
   return {
     venta,
+    refreshVenta,
     categorias,
     categoriaSeleccionada,
     setCategoriaSeleccionada,

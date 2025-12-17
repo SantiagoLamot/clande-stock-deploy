@@ -140,9 +140,20 @@ public class VentaController {
     @GetMapping("/caja/{id}")
     public ResponseEntity<?> obtenerPorCaja(@PathVariable Long id) {
         try {
-            System.out.println("Entra aca");
             List<VentaResponseDTO> response = ventaService.obtenerPorCaja(id);
             return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error inesperado al obtener ventas cerradas");
+        }
+    }
+    @PostMapping("/comanda/{id}")
+    public ResponseEntity<?> imprimioComanda(@PathVariable Long id) {
+        try {
+            ventaService.imprimioComanda(id);
+            return ResponseEntity.ok().build();
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (Exception e) {

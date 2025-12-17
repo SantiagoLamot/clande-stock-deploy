@@ -436,4 +436,14 @@ public class VentaService {
         }
     }
 
+    public void imprimioComanda(Long id) {
+        Venta venta = ventaRepository.findById(id).orElseThrow(() -> new RuntimeException("Venta no encontrada"));
+        venta.getProductos().forEach(prod -> {
+        if (Boolean.TRUE.equals(prod.getComanda())) {
+            prod.setComanda(false);
+        }
+    });
+        ventaRepository.save(venta);
+    }
+
 }

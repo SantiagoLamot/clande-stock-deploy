@@ -13,8 +13,14 @@ public interface MetodoPagoRepository extends JpaRepository<MetodoPago, Long> {
 
     List<MetodoPago> findByEstadoTrue();
 
+    List<MetodoPago> findByEstadoFalse();
+
     List<MetodoPago> findByLocalIdAndEstadoTrue(Long localId);
 
     List<MetodoPago> findByLocal(Local local);
+
+    List<MetodoPago> findByLocalAndEstadoTrue(Local local);
+
+    List<MetodoPago> findByLocalAndEstadoFalse(Local local);
 
 }

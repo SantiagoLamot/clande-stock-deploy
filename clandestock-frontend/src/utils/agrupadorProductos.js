@@ -1,34 +1,31 @@
 /**
- * Agrupa productos repetidos por nombre, calcula cantidad y total.
- * Además, conserva el idProductoPorVenta (para quitar) y busca el productoPrincipalId (para agregar).
- *
- * @param {Array} productosVenta - Array de productos desde la venta (cada uno con idProductoPorVenta).
- * @param {Array} productosStock - Array de productos disponibles con productoPrincipalId.
- * @returns {Array} - Array de productos agrupados con cantidad, total, y ambos IDs.
+ * Agrupa productos repetidos por idProducto, calcula cantidad y total.
+ * Conserva todos los idProductoPorVenta en un array y busca el productoPrincipalId en stock.
  */
 export const agruparProductos = (productosVenta, productosStock) => {
   return Object.values(
     productosVenta.reduce((acc, prod) => {
-      const key = prod.nombreProducto;
+      const key = prod.idProducto; // usar idProducto como clave
 
       // buscar el producto en stock para obtener productoPrincipalId
       const prodStock = productosStock.find(
-        (p) => p.nombreProducto === prod.nombreProducto
+        (p) => p.id === prod.idProducto
       );
 
       if (!acc[key]) {
         acc[key] = {
           nombreProducto: prod.nombreProducto,
           precioProducto: prod.precioProducto,
-          productoPrincipalId: prodStock ? prodStock.productoPrincipalId : null,
-          idProductoPorVenta: prod.idProductoPorVenta,
+          idProducto: prod.idProducto,
+          idProductosPorVenta: [prod.idProductoPorVenta], // array con todos los idProductoPorVenta
           cantidad: 1,
           total: parseFloat(prod.precioProducto),
+          stockDisponible: prodStock ? prodStock.stockDisponible : 0,
         };
       } else {
         acc[key].cantidad += 1;
         acc[key].total += parseFloat(prod.precioProducto);
-        acc[key].idProductoPorVenta = prod.idProductoPorVenta; // mantener último para quitar
+        acc[key].idProductosPorVenta.push(prod.idProductoPorVenta);
       }
 
       return acc;

@@ -1,15 +1,72 @@
-.admin-welcome {
-  font-family: "Cinzel", serif; /* fuente gótica */
-  font-size: 2.5rem;
+/* Fondo y contenedor principal */
+.admin-container {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  background: radial-gradient(circle at center, #111 20%, #000 100%);
+  color: #f8f9fa;
+  font-family: "MedievalSharp", serif;
+  text-shadow: 1px 1px 3px #000;
+}
+
+/* Fondo animado */
+.background-glow {
+  position: absolute;
+  width: 150%;
+  height: 150%;
+  top: -25%;
+  left: -25%;
+  background: conic-gradient(from 180deg at 50% 50%, #ff0040, #ffc107, #ff0040);
+  animation: rotate 8s linear infinite;
+  opacity: 0.15;
+  z-index: 0;
+  border-radius: 50%;
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Texto principal */
+.admin-title {
+  font-size: 2.8rem;
   font-weight: bold;
+  letter-spacing: 2px;
+  text-shadow: 0 0 10px #ff0040, 0 0 20px #000;
+  z-index: 1;
 }
 
+/* Marca ClandeStock */
 .brand {
-  color: #ffc107; /* amarillo Bootstrap */
-  text-shadow: 1px 1px 2px #000;
+  font-family: "Pirata One", cursive;
+  color: #ffc107;
+  font-size: 3rem;
+  text-shadow: 0 0 12px #ff0040, 0 0 30px #000;
+  display: inline-block;
+  transform: rotate(-1deg);
+  animation: pulseGlow 3s ease-in-out infinite;
 }
 
-.gothic-font {
-  font-family: "Cinzel", serif;
-  text-shadow: 1px 1px 2px #000;
+@keyframes pulseGlow {
+  0% {
+    text-shadow: 0 0 5px #ff0040, 0 0 15px #ff0040, 0 0 30px #000;
+  }
+  50% {
+    text-shadow: 0 0 15px #ff0040, 0 0 40px #ff0040, 0 0 60px #000;
+  }
+  100% {
+    text-shadow: 0 0 5px #ff0040, 0 0 15px #ff0040, 0 0 30px #000;
+  }
+}
+
+/* Subtítulo */
+.admin-subtitle {
+  font-size: 1.3rem;
+  letter-spacing: 1px;
+  z-index: 1;
 }

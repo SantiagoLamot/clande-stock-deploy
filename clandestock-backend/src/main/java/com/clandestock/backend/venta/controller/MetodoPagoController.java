@@ -91,6 +91,46 @@ public class MetodoPagoController {
         }
     }
 
+    @GetMapping("/activos")
+    public ResponseEntity<?> obtenerMetodosPagoActivos() {
+        try {
+            UsuarioContexto usuario = (UsuarioContexto) SecurityContextHolder.getContext()
+                    .getAuthentication()
+                    .getPrincipal();
+
+            List<MetodoPagoResponseDTO> lista = metodoPagoService.listarMetodosActivosPorUsuario(usuario);
+            return ResponseEntity.ok(lista);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Error al obtener métodos de pago activos: " + e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error inesperado al obtener métodos de pago activos");
+        }
+    }
+
+    @GetMapping("/inactivos")
+    public ResponseEntity<?> obtenerMetodosPagoInactivos() {
+        try {
+            UsuarioContexto usuario = (UsuarioContexto) SecurityContextHolder.getContext()
+                    .getAuthentication()
+                    .getPrincipal();
+
+            List<MetodoPagoResponseDTO> lista = metodoPagoService.listarMetodosInactivosPorUsuario(usuario);
+            return ResponseEntity.ok(lista);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Error al obtener métodos de pago inactivos: " + e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error inesperado al obtener métodos de pago inactivos");
+        }
+    }
+
+
+
+
+    //extras
     @GetMapping("/local/{id}")
     public ResponseEntity<?> obtenerMetodosPagoPorLocal(@PathVariable("id") Long localId) {
         try {
@@ -102,18 +142,6 @@ public class MetodoPagoController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno: " + e.getMessage());
         }
     }
-
-    @GetMapping("/activos")
-    public ResponseEntity<List<MetodoPagoResponseDTO>> obtenerMetodosPagoActivos() {
-        try {
-            List<MetodoPagoResponseDTO> lista = metodoPagoService.listarMetodosActivos();
-            return ResponseEntity.ok(lista);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Collections.emptyList());
-        }
-    }
-
     @GetMapping("/local/{id}/activos")
     public ResponseEntity<?> obtenerMetodosPagoActivosPorLocal(@PathVariable("id") Long localId) {
         try {

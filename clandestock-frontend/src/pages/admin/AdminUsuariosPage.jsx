@@ -15,7 +15,7 @@ export const AdminUsuariosPage = () => {
   useEffect(() => {
     const fetchUsuarios = async () => {
       try {
-        const response = await fetch("/api/usuario", {
+        const response = await fetch("http://localhost:8080/usuario", {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (!response.ok) throw new Error("Error al obtener usuarios");
@@ -47,7 +47,7 @@ export const AdminUsuariosPage = () => {
       };
 
       const response = await fetch(
-        `/api/usuario/${editingUser.id}/editar`,
+        `http://localhost:8080/usuario/${editingUser.id}/editar`,
         {
           method: "PUT",
           headers: {
@@ -83,8 +83,8 @@ export const AdminUsuariosPage = () => {
   const handleToggleEstado = async (id, isActivo) => {
     try {
       const endpoint = isActivo
-        ? `/api/usuario/${id}/baja`
-        : `/api/usuario/${id}/alta`;
+        ? `http://localhost:8080/usuario/${id}/baja`
+        : `http://localhost:8080/usuario/${id}/alta`;
 
       const response = await fetch(endpoint, {
         method: "PUT",

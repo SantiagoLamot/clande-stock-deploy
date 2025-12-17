@@ -1,8 +1,12 @@
 package com.clandestock.backend.usuario.service;
 
+import com.clandestock.backend.usuario.dto.ActualizarContrasenaRequestDTO;
+import com.clandestock.backend.usuario.dto.ActualizarContrasenaResponse;
 import com.clandestock.backend.usuario.dto.UsuarioRequestDTO;
 import com.clandestock.backend.usuario.dto.UsuarioResponseDTO;
 import com.clandestock.backend.usuario.modelos.TipoUsuarioEnum;
+import jakarta.persistence.EntityNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.clandestock.backend.usuario.modelos.Usuario;
@@ -14,10 +18,12 @@ import java.util.stream.Collectors;
 
 @Service
 public class UsuarioService {
-    private UsuarioRepository usuarioRepository;
+    private final UsuarioRepository usuarioRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UsuarioService(UsuarioRepository ur){
+    public UsuarioService(UsuarioRepository ur, PasswordEncoder passwordEncoder){
         this.usuarioRepository = ur;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public Usuario obtenerPorNombreUsuario(String nombreUsuario){
@@ -96,5 +102,20 @@ public class UsuarioService {
         usuarioRepository.save(usuario);
 
         return toResponse(usuario);
+    }
+
+    public ActualizarContrasenaResponse actualizarContrasena (String nombreUsuario,
+                                                              ActualizarContrasenaRequestDTO request){
+        Usuario usuario = usuarioRepository.findByNombreUsuario(nombreUsuario)
+                .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
+
+        if (!passwordEncoder.matches(request.contrasenaActual(), usuario.getContrasena())){
+            throw new IllegalArgumentException("La contraseña actual ingresada es incorrecta o no coincide");
+        }
+
+        usuario.setContrasena(passwordEncoder.encode(request.contrasenaNueva()));
+        usuarioRepository.save(usuario);
+
+        return new ActualizarContrasenaResponse("La contraseña ha sido actualizada correctamente");
     }
 }

@@ -69,8 +69,8 @@ export const ModeradorPage = () => {
   useEffect(() => {
     if (vistaActiva === "ventasCerradas") {
       refrescarPedidosCerrados();
-      cargarDatos();
     }
+    cargarDatos();
   }, [vistaActiva]);
 
 

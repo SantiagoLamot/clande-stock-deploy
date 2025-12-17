@@ -121,18 +121,26 @@ public class MetodoPagoService {
                 .toList();
     }
 
-    public List<MetodoPagoResponseDTO> listarMetodosActivos() {
-        List<MetodoPago> lista = metodoPagoRepository.findByEstadoTrue();
+    public List<MetodoPagoResponseDTO> listarMetodosActivosPorUsuario(UsuarioContexto usuarioContexto) {
+        List<MetodoPago> metodos;
+        if (usuarioContexto.esAdminGeneral()) {
+            metodos = metodoPagoRepository.findByEstadoTrue();
+        } else {
+            Local local = localService.obtenerPorNombre(usuarioContexto.getLocal());
+            metodos = metodoPagoRepository.findByLocalAndEstadoTrue(local);
+        }
+        return metodos.stream().map(this::toResponseDTO).toList();
+    }
 
-        return lista.stream()
-                .map(metodo -> new MetodoPagoResponseDTO(
-                        String.valueOf(metodo.getId()),
-                        metodo.getNombreMetodoPago(),
-                        metodo.getIncremento() != null ? String.valueOf(metodo.getIncremento()) : null,
-                        metodo.getDescuento() != null ? String.valueOf(metodo.getDescuento()) : null,
-                        metodo.getEstado() != null ? String.valueOf(metodo.getEstado()) : null,
-                        metodo.getLocal() != null ? String.valueOf(metodo.getLocal().getId()) : null))
-                .toList();
+    public List<MetodoPagoResponseDTO> listarMetodosInactivosPorUsuario(UsuarioContexto usuarioContexto) {
+        List<MetodoPago> metodos;
+        if (usuarioContexto.esAdminGeneral()) {
+            metodos = metodoPagoRepository.findByEstadoFalse();
+        } else {
+            Local local = localService.obtenerPorNombre(usuarioContexto.getLocal());
+            metodos = metodoPagoRepository.findByLocalAndEstadoFalse(local);
+        }
+        return metodos.stream().map(this::toResponseDTO).toList();
     }
 
     public List<MetodoPagoResponseDTO> listarActivosPorLocal(Long localId) {

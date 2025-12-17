@@ -1,5 +1,7 @@
 package com.clandestock.backend.producto.controller;
 
+import jakarta.persistence.EntityNotFoundException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,96 +26,138 @@ import org.springframework.web.bind.annotation.PutMapping;
 public class CategoriaController {
     private CategoriaService categoriaService;
 
-    public CategoriaController(CategoriaService cs){
+    public CategoriaController(CategoriaService cs) {
         this.categoriaService = cs;
     }
 
     @PreAuthorize("hasAuthority('ADMIN_GENERAL')")
     @PostMapping()
     public ResponseEntity<?> guardar(@RequestBody CategoriaRequestDTO dto) {
-        try{
+        try {
             CategoriaResponseDTO response = categoriaService.save(dto);
             return ResponseEntity.ok(response);
-        }
-        catch(RuntimeException e){
+        } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
-    
+
     //validad que sea admin gral o el moderador adecuado
     @GetMapping("/{id}")
     public ResponseEntity<?> obtenerPorId(@PathVariable String id) {
-        try{
+        try {
             CategoriaResponseDTO response = categoriaService.obtenerCategoria(Long.parseLong(id));
             return ResponseEntity.ok(response);
-        }
-        catch(RuntimeException e){
+        } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
-    
+
     //validad que sea admin gral o el moderador adecuado
     @GetMapping("/local/{id}")
     public ResponseEntity<?> obtenerPorLocal(@PathVariable String id) {
-        try{
+        try {
             List<CategoriaResponseDTO> response = categoriaService.obtenerCategoriaPorLocal(Long.parseLong(id));
             return ResponseEntity.ok(response);
-        }
-        catch(RuntimeException e){
+        } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
-    
+
     @PreAuthorize("hasAuthority('ADMIN_GENERAL')")
     @PutMapping()
     public ResponseEntity<?> actualizarPorId(@RequestBody CategoriaRequestDTO dto) {
-        try{
-            CategoriaResponseDTO response = categoriaService.actualizar( dto);
+        try {
+            CategoriaResponseDTO response = categoriaService.actualizar(dto);
             return ResponseEntity.ok(response);
-        }
-        catch(RuntimeException e){
+        } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> eliminar (@PathVariable String id){
-            try{
-                categoriaService.eliminar(Long.parseLong(id));
-                return ResponseEntity.ok("Categoria eliminada correctamente");
-            }
-            catch(RuntimeException e){
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-            }
-            catch(Exception e){
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-            }
-        
-    }
-
-        //obtiene todas las que correspondan segun JWT
-    @GetMapping("/todas")
-    public ResponseEntity<?> obtenertodas() {
-        try{
-            List<CategoriaResponseDTO> response = categoriaService.obtenerTodas();
-            return ResponseEntity.ok(response);
-        }
-        catch(RuntimeException e){
+    public ResponseEntity<?> eliminar(@PathVariable String id) {
+        try {
+            categoriaService.eliminar(Long.parseLong(id));
+            return ResponseEntity.ok("Categoria eliminada correctamente");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
-        catch(Exception e){
+
+    }
+
+    //obtiene todas las que correspondan segun JWT
+    @GetMapping("/todas")
+    public ResponseEntity<?> obtenertodas() {
+        try {
+            List<CategoriaResponseDTO> response = categoriaService.obtenerTodas();
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/{id}/baja")
+    public ResponseEntity<CategoriaResponseDTO> darDeBaja(@PathVariable Long id) {
+        try {
+            CategoriaResponseDTO response = categoriaService.darDeBaja(id);
+            return ResponseEntity.ok(response);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(null);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(null);
+        }
+    }
+
+    @PutMapping("/{id}/alta")
+    public ResponseEntity<CategoriaResponseDTO> darDeAlta(@PathVariable Long id) {
+        try {
+            CategoriaResponseDTO responseDTO = categoriaService.reactivarCategoria(id);
+            return ResponseEntity.ok(responseDTO);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(null);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(null);
+        }
+    }
+
+    @GetMapping("/todas/activas")
+    public ResponseEntity<?> obtenerTodasActivas() {
+        try {
+            List<CategoriaResponseDTO> response = categoriaService.obtenerCategoriasActivas();
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/todas/inactivas")
+    public ResponseEntity<?> obtenerInactivas() {
+        try {
+            List<CategoriaResponseDTO> response = categoriaService.obtenerInactivas();
+            return ResponseEntity.ok(response);
+        } catch (AccessDeniedException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }

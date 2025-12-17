@@ -6,6 +6,15 @@ export const getAllVentasCerradas = async () => {
 };
 
 export const VentasCerradasPorCaja = async (caja) => {
-    const response = await axios.get('/venta/caja/'+caja);
+    const response = await axios.get('/venta/caja/' + caja);
     return response.data;
+};
+
+export const getVentaById = async (idVenta) => {
+    const res = await axios.get("/venta/" +idVenta)
+    return res.data;
+};
+export const imprimioComanda = async (idVenta) => {
+    const res = await axios.post("/venta/comanda/" +idVenta)
+    return res.data;
 };

@@ -33,4 +33,7 @@ public class Categoria {
     @ManyToOne
     @JoinColumn(name = "localID", nullable = false)
     private Local local;
+
+    @Column(nullable = false)
+    private boolean activo = true;
 }
