@@ -15,7 +15,7 @@ export default function PanelNuevaVenta() {
   useEffect(() => {
     if (tipoVenta === "CONSUMO_LOCAL") {
       // Mesas
-      fetch("http://localhost:8080/mesas", {
+      fetch("/api/mesas", {
         headers: { Authorization: `Bearer ${token}` },
       })
         .then((res) => res.json())
@@ -26,7 +26,7 @@ export default function PanelNuevaVenta() {
         .catch((err) => console.error("Error cargando mesas:", err));
 
       // Mozos
-      fetch("http://localhost:8080/mozos", {
+      fetch("/api/mozos", {
         headers: { Authorization: `Bearer ${token}` },
       })
         .then((res) => res.json())
@@ -48,7 +48,7 @@ export default function PanelNuevaVenta() {
     };
 
     try {
-      const response = await fetch("http://localhost:8080/venta/nueva", {
+      const response = await fetch("/api/venta/nueva", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
