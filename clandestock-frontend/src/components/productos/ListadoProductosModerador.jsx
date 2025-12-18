@@ -72,10 +72,6 @@ export default function ListadoProductosModerador({ cargarAlertas }) {
         cargarProductos();
     }, []);
 
-    useEffect(() => {
-        console.log("Productos actualizados:", productos);
-    }, [productos]);
-
     const handleAlerta = async (producto, tipoAlerta) => {
         try {
             const dto = { stockBajo: "false", sinStock: "false" };
