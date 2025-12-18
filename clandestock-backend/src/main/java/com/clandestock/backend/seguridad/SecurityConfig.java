@@ -46,6 +46,7 @@ public class SecurityConfig {
                 .and()
                 .authorizeHttpRequests(req -> req.requestMatchers("/auth/**")
                         .permitAll()
+                        .requestMatchers("/actuator/health").permitAll()
                         .anyRequest()
                         .authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
