@@ -112,10 +112,15 @@ export const ListadoCajasAbiertas = () => {
                                 <p className="card-text mb-1">
                                     <strong>Fecha apertura:</strong> {
                                         (() => {
-                                            const fechaStr = caja.fechaApertura.split(".")[0].replace("T", " ");
-                                            const [fecha, hora] = fechaStr.split(" ");
-                                            const [yyyy, mm, dd] = fecha.split("-");
-                                            return `${dd}/${mm}/${yyyy} ${hora.slice(0, 5)}`;
+                                            const fecha = new Date(caja.fechaApertura);
+                                            // Ajusto manualmente a hora local de la DB (UTC-3)
+                                            fecha.setHours(fecha.getHours() - 3);
+                                            const dd = String(fecha.getUTCDate()).padStart(2, "0");
+                                            const mm = String(fecha.getUTCMonth() + 1).padStart(2, "0");
+                                            const yyyy = fecha.getUTCFullYear();
+                                            const hh = String(fecha.getUTCHours()).padStart(2, "0");
+                                            const min = String(fecha.getUTCMinutes()).padStart(2, "0");
+                                            return `${dd}/${mm}/${yyyy} ${hh}:${min}`;
                                         })()
                                     }
 
@@ -126,10 +131,15 @@ export const ListadoCajasAbiertas = () => {
                                         <strong>Fecha cierre:</strong>
                                         {
                                             (() => {
-                                                const fechaStr = caja.fechaCierre.split(".")[0].replace("T", " ");
-                                                const [fecha, hora] = fechaStr.split(" ");
-                                                const [yyyy, mm, dd] = fecha.split("-");
-                                                return `${dd}/${mm}/${yyyy} ${hora.slice(0, 5)}`;
+                                                const fecha = new Date(caja.fechaCierre);
+                                                // Ajusto manualmente a hora local de la DB (UTC-3)
+                                                fecha.setHours(fecha.getHours() - 3);
+                                                const dd = String(fecha.getUTCDate()).padStart(2, "0");
+                                                const mm = String(fecha.getUTCMonth() + 1).padStart(2, "0");
+                                                const yyyy = fecha.getUTCFullYear();
+                                                const hh = String(fecha.getUTCHours()).padStart(2, "0");
+                                                const min = String(fecha.getUTCMinutes()).padStart(2, "0");
+                                                return `${dd}/${mm}/${yyyy} ${hh}:${min}`;
                                             })()
                                         }
                                     </p>
