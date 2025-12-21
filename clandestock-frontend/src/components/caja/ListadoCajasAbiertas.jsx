@@ -112,6 +112,7 @@ export const ListadoCajasAbiertas = () => {
                                 <p className="card-text mb-1">
                                     <strong>Fecha apertura:</strong> {
                                         (() => {
+                                            console.log(caja.fechaApertura)
                                             const fecha = new Date(caja.fechaApertura);
                                             // Ajusto manualmente a hora local de la DB (UTC-3)
                                             fecha.setHours(fecha.getHours() - 3);
