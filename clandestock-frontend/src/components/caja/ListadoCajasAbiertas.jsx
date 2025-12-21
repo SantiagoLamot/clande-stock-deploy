@@ -112,15 +112,18 @@ export const ListadoCajasAbiertas = () => {
                                 <p className="card-text mb-1">
                                     <strong>Fecha apertura:</strong> {
                                         (() => {
-                                            console.log(caja.fechaApertura)
                                             const fecha = new Date(caja.fechaApertura);
-                                            // Ajusto manualmente a hora local de la DB (UTC-3)
+
+                                            // Ajusto manualmente restando 3 horas
                                             fecha.setHours(fecha.getHours() - 3);
-                                            const dd = String(fecha.getUTCDate()).padStart(2, "0");
-                                            const mm = String(fecha.getUTCMonth() + 1).padStart(2, "0");
-                                            const yyyy = fecha.getUTCFullYear();
-                                            const hh = String(fecha.getUTCHours()).padStart(2, "0");
-                                            const min = String(fecha.getUTCMinutes()).padStart(2, "0");
+
+                                            // Ahora uso los getters locales
+                                            const dd = String(fecha.getDate()).padStart(2, "0");
+                                            const mm = String(fecha.getMonth() + 1).padStart(2, "0");
+                                            const yyyy = fecha.getFullYear();
+                                            const hh = String(fecha.getHours()).padStart(2, "0");
+                                            const min = String(fecha.getMinutes()).padStart(2, "0");
+
                                             return `${dd}/${mm}/${yyyy} ${hh}:${min}`;
                                         })()
                                     }
