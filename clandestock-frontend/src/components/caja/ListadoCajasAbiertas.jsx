@@ -15,10 +15,10 @@ export const ListadoCajasAbiertas = () => {
     const [metodos, setMetodos] = useState([]);
 
     const localesMap = {
-    "1": "Tenedor Libre",
-    "2": "Termas",
-    "3": "Heladería",
-};
+        "1": "Tenedor Libre",
+        "2": "Termas",
+        "3": "Heladería",
+    };
 
 
     useEffect(() => {
@@ -92,7 +92,7 @@ export const ListadoCajasAbiertas = () => {
     return (
         <div className="d-flex flex-column">
             <div className="row flex-grow-1 overflow-auto gy-2">
-                <Title text={"Cajas abiertas"}/>
+                <Title text={"Cajas abiertas"} />
                 {cajasPagina.map((caja) => (
                     <div
                         key={caja.cajaId}
@@ -103,19 +103,35 @@ export const ListadoCajasAbiertas = () => {
                         <div className="card shadow-sm h-100">
                             <div className="card-body d-flex flex-column">
                                 {!caja.fechaCierre && (
-                                    <PuntoLive/>
+                                    <PuntoLive />
                                 )}
                                 <h5 className="card-title">Caja #{caja.cajaId}</h5>
                                 <p className="card-text mb-1">
                                     <strong>Local:</strong> {localesMap[caja.idLocal]}
                                 </p>
                                 <p className="card-text mb-1">
-                                    <strong>Fecha apertura:</strong> {caja.fechaApertura.replace("T", " ").split(".")[0]}
+                                    <strong>Fecha apertura:</strong> {
+                                        (() => {
+                                            const fechaStr = caja.fechaApertura.split(".")[0].replace("T", " ");
+                                            const [fecha, hora] = fechaStr.split(" ");
+                                            const [yyyy, mm, dd] = fecha.split("-");
+                                            return `${dd}/${mm}/${yyyy} ${hora.slice(0, 5)}`;
+                                        })()
+                                    }
+
                                 </p>
 
                                 {caja.fechaCierre && (
                                     <p className="card-text mb-1">
-                                        <strong>Fecha cierre:</strong> {caja.fechaCierre.replace("T", " ").split(".")[0]}
+                                        <strong>Fecha cierre:</strong>
+                                        {
+                                            (() => {
+                                                const fechaStr = caja.fechaCierre.split(".")[0].replace("T", " ");
+                                                const [fecha, hora] = fechaStr.split(" ");
+                                                const [yyyy, mm, dd] = fecha.split("-");
+                                                return `${dd}/${mm}/${yyyy} ${hora.slice(0, 5)}`;
+                                            })()
+                                        }
                                     </p>
                                 )}
 
